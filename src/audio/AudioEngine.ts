@@ -109,6 +109,21 @@ export class AudioEngine {
     this.oscillator2.frequency.setTargetAtTime(v, this.context.currentTime, 0.05)
   }
 
+  setDetune(cents: number) {
+    const now = this.context.currentTime
+    this.oscillator.detune.setTargetAtTime(cents, now, 0.02)
+    // Detune osc2 in opposite direction for chorus effect if active
+    if (this.currentMode === 3) {
+       this.oscillator2.detune.setTargetAtTime(-cents, now, 0.02)
+    } else {
+       this.oscillator2.detune.setTargetAtTime(cents, now, 0.02)
+    }
+  }
+
+  setFilterType(type: BiquadFilterType) {
+    this.filter.type = type
+  }
+
   setQ(value: number) {
     const v = Math.max(0.1, Math.min(40, value))
     this.filter.Q.setTargetAtTime(v, this.context.currentTime, 0.05)

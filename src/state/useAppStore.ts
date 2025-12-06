@@ -7,6 +7,8 @@ export interface AppState {
   mode: number
   waveform: Waveform
   frequency: number
+  detune: number
+  filterType: BiquadFilterType
   q: number
   gain: number
   analyserSmoothing: number
@@ -14,6 +16,8 @@ export interface AppState {
   setMode: (mode: number) => void
   setWaveform: (waveform: Waveform) => void
   setFrequency: (frequency: number) => void
+  setDetune: (detune: number) => void
+  setFilterType: (type: BiquadFilterType) => void
   setQ: (q: number) => void
   setGain: (gain: number) => void
   setAnalyserSmoothing: (value: number) => void
@@ -26,6 +30,8 @@ const useAppStore = create<AppState>()(
     mode: 0,
     waveform: 'sine',
     frequency: 440,
+    detune: 0,
+    filterType: 'lowpass',
     q: 1.2,
     gain: 0.4,
     analyserSmoothing: 0.85,
@@ -33,6 +39,8 @@ const useAppStore = create<AppState>()(
     setMode: (mode) => set({ mode }),
     setWaveform: (waveform) => set({ waveform }),
     setFrequency: (frequency) => set({ frequency }),
+    setDetune: (detune) => set({ detune }),
+    setFilterType: (filterType) => set({ filterType }),
     setQ: (q) => set({ q }),
     setGain: (gain) => set({ gain }),
     setAnalyserSmoothing: (value) => set({ analyserSmoothing: value }),

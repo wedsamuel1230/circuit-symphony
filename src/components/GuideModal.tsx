@@ -60,6 +60,23 @@ export function GuideModal({ onClose }: GuideModalProps) {
         </div>
 
         <div className="guide-section" style={{ marginTop: '1.5rem' }}>
+          <h3 style={{ color: '#ff7a7a' }}>Filter Types</h3>
+          <p>Filters shape the sound by removing certain frequencies.</p>
+          <ul style={{ lineHeight: '1.6' }}>
+            <li><strong>Lowpass:</strong> Allows low frequencies to pass, cuts highs. Makes sound "muffled".</li>
+            <li><strong>Highpass:</strong> Allows high frequencies to pass, cuts lows. Makes sound "thin".</li>
+            <li><strong>Bandpass:</strong> Allows a narrow band of frequencies. Like a telephone or radio.</li>
+            <li><strong>Notch:</strong> Removes a narrow band. Hard to hear unless swept.</li>
+            <li><strong>Peaking:</strong> Boosts a specific frequency band.</li>
+          </ul>
+        </div>
+
+        <div className="guide-section" style={{ marginTop: '1.5rem' }}>
+          <h3 style={{ color: '#d47aff' }}>Detune</h3>
+          <p>Fine-tunes the pitch in cents (1/100th of a semitone). In "Dual Osc" mode, detuning creates a thick, swirling "chorus" effect by beating two oscillators against each other.</p>
+        </div>
+
+        <div className="guide-section" style={{ marginTop: '1.5rem' }}>
           <h3 style={{ color: '#ff7a7a' }}>Frequency (Hz)</h3>
           <p>Determines the <strong>pitch</strong> of the sound. Higher frequency means higher pitch.</p>
           <p><em>Try moving your hand closer/further in gesture mode to sweep the frequency!</em></p>

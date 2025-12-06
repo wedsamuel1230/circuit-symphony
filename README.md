@@ -2,6 +2,13 @@
 
 A Vite + React + Three.js playground where Web Audio meets gesture control. Gestures via MediaPipe Hands, state via Zustand, visuals via instanced meshes.
 
+## Features
+- **Audio Synthesis**: Real-time oscillator with multiple waveforms (Sine, Square, Sawtooth, Triangle).
+- **Advanced Controls**: Adjustable Frequency, Detune, Q-Factor, Gain, and 5 Filter Types.
+- **Visuals**: 3D Ribbon visualization and Starfield background.
+- **Gestures**: Control audio parameters with hand movements via webcam.
+- **Education**: Built-in guide explaining synthesis concepts.
+
 ## Quickstart
 ```powershell
 npm install

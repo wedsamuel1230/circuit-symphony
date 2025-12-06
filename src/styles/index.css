@@ -43,6 +43,11 @@ a:hover {
   gap: 24px;
   height: 100vh;
   padding: 24px;
+  transition: grid-template-columns 0.3s ease;
+}
+
+.layout.layout--full {
+  grid-template-columns: 1fr;
 }
 
 .sidebar {

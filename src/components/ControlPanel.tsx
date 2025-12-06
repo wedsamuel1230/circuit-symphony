@@ -9,6 +9,8 @@ interface ControlPanelProps {
   onOpenGuide: () => void
   onWaveformChange: (waveform: Waveform) => void
   onFrequencyChange: (v: number) => void
+  onDetuneChange: (v: number) => void
+  onFilterTypeChange: (t: BiquadFilterType) => void
   onQChange: (v: number) => void
   onGainChange: (v: number) => void
   onSmoothingChange: (v: number) => void
@@ -16,6 +18,7 @@ interface ControlPanelProps {
 }
 
 const waveforms: Waveform[] = ['sine', 'square', 'sawtooth', 'triangle']
+const filterTypes: BiquadFilterType[] = ['lowpass', 'highpass', 'bandpass', 'notch', 'peaking']
 
 export function ControlPanel({
   onStart,
@@ -24,12 +27,14 @@ export function ControlPanel({
   onOpenGuide,
   onWaveformChange,
   onFrequencyChange,
+  onDetuneChange,
+  onFilterTypeChange,
   onQChange,
   onGainChange,
   onSmoothingChange,
   started,
 }: ControlPanelProps) {
-  const { mode, setMode, waveform, frequency, q, gain, analyserSmoothing } = useAppStore()
+  const { mode, setMode, waveform, frequency, detune, filterType, q, gain, analyserSmoothing } = useAppStore()
 
   return (
     <section className="panel" aria-label="Control panel">
@@ -108,6 +113,45 @@ export function ControlPanel({
                 onChange={(e) => onFrequencyChange(Number(e.target.value))}
               />
             </div>
+
+            <div className="slider">
+              <label htmlFor="detune" className="label">
+                Detune {detune} cents
+              </label>
+              <input
+                id="detune"
+                type="range"
+                min={-100}
+                max={100}
+                step={1}
+                value={detune}
+                onChange={(e) => onDetuneChange(Number(e.target.value))}
+              />
+            </div>
+
+            <div>
+              <label className="label" htmlFor="filterType">
+                Filter Type
+              </label>
+              <select
+                id="filterType"
+                value={filterType}
+                onChange={(e) => onFilterTypeChange(e.target.value as BiquadFilterType)}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#fff',
+                  borderRadius: '4px'
+                }}
+              >
+                {filterTypes.map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+
             <div className="slider">
               <label htmlFor="q" className="label">
                 Q {q.toFixed(2)}

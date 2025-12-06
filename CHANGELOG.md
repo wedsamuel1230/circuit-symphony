@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0] - 2025-12-06
+
+### Added
+- **Safety**: Added a volume warning modal before audio start to protect user hearing.
+- **Audio Control**: Added `Detune` slider (-100 to +100 cents) for fine pitch adjustment and chorus effects.
+- **Audio Control**: Added `Filter Type` selector (Lowpass, Highpass, Bandpass, Notch, Peaking).
+- **Education**: Updated the in-app Guide to explain Filter Types and Detune concepts.
+
 ## [0.1.1] - 2025-12-06
 
 ### Fixed

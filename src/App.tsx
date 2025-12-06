@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ControlPanel from './components/ControlPanel'
 import { GuideModal } from './components/GuideModal'
+import { WarningModal } from './components/WarningModal'
 import Visualizer from './visualization/Visualizer'
 import AudioEngine from './audio/AudioEngine'
 import useAppStore from './state/useAppStore'
@@ -8,10 +9,15 @@ import { useGestures } from './hooks/useGestures'
 
 function App() {
   const audioRef = useRef<AudioEngine | null>(null)
-  const { mode, waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted, markStopped } = useAppStore()
+  const { 
+    mode, waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, 
+    detune, setDetune, filterType, setFilterType,
+    started, markStarted, markStopped 
+  } = useAppStore()
   const { initGestures, error: gestureError } = useGestures(audioRef)
   const [showSidebar, setShowSidebar] = useState(true)
   const [showGuide, setShowGuide] = useState(false)
+  const [showWarning, setShowWarning] = useState(false)
 
   useEffect(() => {
     audioRef.current = new AudioEngine()
@@ -23,7 +29,12 @@ function App() {
     }
   }, [mode])
 
-  const handleStart = async () => {
+  const handleStartRequest = () => {
+    setShowWarning(true)
+  }
+
+  const handleStartConfirmed = async () => {
+    setShowWarning(false)
     if (!audioRef.current) return
     try {
       await audioRef.current.start()
@@ -51,6 +62,16 @@ function App() {
     audioRef.current?.setFrequency(v)
   }
 
+  const handleDetuneChange = (v: number) => {
+    setDetune(v)
+    audioRef.current?.setDetune(v)
+  }
+
+  const handleFilterTypeChange = (t: BiquadFilterType) => {
+    setFilterType(t)
+    audioRef.current?.setFilterType(t)
+  }
+
   const handleQChange = (v: number) => {
     setQ(v)
     audioRef.current?.setQ(v)
@@ -67,16 +88,18 @@ function App() {
   }
 
   return (
-    <main className="layout">
+    <main className={`layout ${!showSidebar ? 'layout--full' : ''}`}>
       {showSidebar ? (
         <div className="sidebar">
           <ControlPanel
-            onStart={handleStart}
+            onStart={handleStartRequest}
             onStop={handleStop}
             onClose={() => setShowSidebar(false)}
             onOpenGuide={() => setShowGuide(true)}
             onWaveformChange={handleWaveformChange}
             onFrequencyChange={handleFrequencyChange}
+            onDetuneChange={handleDetuneChange}
+            onFilterTypeChange={handleFilterTypeChange}
             onQChange={handleQChange}
             onGainChange={handleGainChange}
             onSmoothingChange={handleSmoothing}
@@ -101,6 +124,7 @@ function App() {
         <Visualizer audio={audioRef.current} running={started} />
       </div>
       {showGuide && <GuideModal onClose={() => setShowGuide(false)} />}
+      {showWarning && <WarningModal onConfirm={handleStartConfirmed} onCancel={() => setShowWarning(false)} />}
     </main>
   )
 }

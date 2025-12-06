@@ -67,7 +67,9 @@ export function Visualizer({ audio, running }: VisualizerProps) {
       composer.setSize(clientWidth, clientHeight)
     }
 
-    window.addEventListener('resize', handleResize)
+    const resizeObserver = new ResizeObserver(() => handleResize())
+    resizeObserver.observe(containerRef.current)
+    
     handleResize()
 
     const animate = (time: number) => {
@@ -88,7 +90,7 @@ export function Visualizer({ audio, running }: VisualizerProps) {
 
     return () => {
       cancelAnimationFrame(raf)
-      window.removeEventListener('resize', handleResize)
+      resizeObserver.disconnect()
       controls.dispose()
       renderer.dispose()
       composer.dispose()

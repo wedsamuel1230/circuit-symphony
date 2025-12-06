@@ -41,7 +41,7 @@ export function ControlPanel({
       <header className="panel__header" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <p className="eyebrow">Circuit Modes</p>
-          <h2>Control</h2>
+          <h2>control</h2>
         </div>
         <div className="controls" style={{ display: 'flex', gap: '8px' }}>
           <button className="btn" onClick={onOpenGuide} aria-label="Open Guide">
@@ -147,7 +147,7 @@ export function ControlPanel({
                 }}
               >
                 {filterTypes.map(t => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t} style={{ color: '#000' }}>{t}</option>
                 ))}
               </select>
             </div>

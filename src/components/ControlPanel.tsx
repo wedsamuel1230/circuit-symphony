@@ -6,6 +6,7 @@ interface ControlPanelProps {
   onStart: () => void
   onStop: () => void
   onClose: () => void
+  onOpenGuide: () => void
   onWaveformChange: (waveform: Waveform) => void
   onFrequencyChange: (v: number) => void
   onQChange: (v: number) => void
@@ -20,6 +21,7 @@ export function ControlPanel({
   onStart,
   onStop,
   onClose,
+  onOpenGuide,
   onWaveformChange,
   onFrequencyChange,
   onQChange,
@@ -36,7 +38,10 @@ export function ControlPanel({
           <p className="eyebrow">Circuit Modes</p>
           <h2>Control</h2>
         </div>
-        <div className="controls">
+        <div className="controls" style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn" onClick={onOpenGuide} aria-label="Open Guide">
+            Help
+          </button>
           <button className="btn" onClick={onClose}>
             Hide
           </button>

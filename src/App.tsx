@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import ControlPanel from './components/ControlPanel'
+import { GuideModal } from './components/GuideModal'
 import Visualizer from './visualization/Visualizer'
 import AudioEngine from './audio/AudioEngine'
 import useAppStore from './state/useAppStore'
@@ -10,6 +11,7 @@ function App() {
   const { mode, waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted, markStopped } = useAppStore()
   const { initGestures, error: gestureError } = useGestures(audioRef)
   const [showSidebar, setShowSidebar] = useState(true)
+  const [showGuide, setShowGuide] = useState(false)
 
   useEffect(() => {
     audioRef.current = new AudioEngine()
@@ -72,6 +74,7 @@ function App() {
             onStart={handleStart}
             onStop={handleStop}
             onClose={() => setShowSidebar(false)}
+            onOpenGuide={() => setShowGuide(true)}
             onWaveformChange={handleWaveformChange}
             onFrequencyChange={handleFrequencyChange}
             onQChange={handleQChange}
@@ -97,6 +100,7 @@ function App() {
       <div className="stage" aria-label="3D visualizer">
         <Visualizer audio={audioRef.current} running={started} />
       </div>
+      {showGuide && <GuideModal onClose={() => setShowGuide(false)} />}
     </main>
   )
 }

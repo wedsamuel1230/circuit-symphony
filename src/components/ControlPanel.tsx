@@ -5,6 +5,7 @@ import useAppStore, { Waveform } from '@/state/useAppStore'
 interface ControlPanelProps {
   onStart: () => void
   onStop: () => void
+  onClose: () => void
   onWaveformChange: (waveform: Waveform) => void
   onFrequencyChange: (v: number) => void
   onQChange: (v: number) => void
@@ -18,6 +19,7 @@ const waveforms: Waveform[] = ['sine', 'square', 'sawtooth', 'triangle']
 export function ControlPanel({
   onStart,
   onStop,
+  onClose,
   onWaveformChange,
   onFrequencyChange,
   onQChange,
@@ -26,7 +28,6 @@ export function ControlPanel({
   started,
 }: ControlPanelProps) {
   const { mode, setMode, waveform, frequency, q, gain, analyserSmoothing } = useAppStore()
-  const [isOpen, setIsOpen] = useState(true)
 
   return (
     <section className="panel" aria-label="Control panel">
@@ -36,8 +37,8 @@ export function ControlPanel({
           <h2>Control</h2>
         </div>
         <div className="controls">
-          <button className="btn" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? 'Hide' : 'Show'}
+          <button className="btn" onClick={onClose}>
+            Hide
           </button>
           {!started ? (
             <button className="btn primary" onClick={onStart}>
@@ -51,9 +52,7 @@ export function ControlPanel({
         </div>
       </header>
 
-      {isOpen && (
-        <>
-          <div className="grid" style={{ marginBottom: '32px' }}>
+      <div className="grid" style={{ marginBottom: '32px' }}>
             <div>
               <label className="label" htmlFor="mode">
                 Mode
@@ -140,10 +139,8 @@ export function ControlPanel({
                 value={analyserSmoothing}
                 onChange={(e) => onSmoothingChange(Number(e.target.value))}
               />
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </section>
   )
 }

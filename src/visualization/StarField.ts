@@ -27,10 +27,10 @@ export class StarField {
     geometry.setAttribute('size', new Float32BufferAttribute(sizes, 1))
 
     const material = new PointsMaterial({
-      size: 0.05,
+      size: 0.02,
       color: 0xffffff,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.8,
       sizeAttenuation: true,
     })
 

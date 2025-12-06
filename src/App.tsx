@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ControlPanel from './components/ControlPanel'
 import Visualizer from './visualization/Visualizer'
 import AudioEngine from './audio/AudioEngine'
@@ -9,6 +9,7 @@ function App() {
   const audioRef = useRef<AudioEngine | null>(null)
   const { mode, waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted, markStopped } = useAppStore()
   const { initGestures, error: gestureError } = useGestures(audioRef)
+  const [showSidebar, setShowSidebar] = useState(true)
 
   useEffect(() => {
     audioRef.current = new AudioEngine()
@@ -65,23 +66,34 @@ function App() {
 
   return (
     <main className="layout">
-      <div className="sidebar">
-        <ControlPanel
-          onStart={handleStart}
-          onStop={handleStop}
-          onWaveformChange={handleWaveformChange}
-          onFrequencyChange={handleFrequencyChange}
-          onQChange={handleQChange}
-          onGainChange={handleGainChange}
-          onSmoothingChange={handleSmoothing}
-          started={started}
-        />
-        <section className="note">
-          <h3>Gestures</h3>
-          <p>Use your webcam (HTTPS required). Spread fingers to boost gain/Q; move hand closer/farther to sweep frequency.</p>
-          {gestureError && <p className="error">{gestureError}</p>}
-        </section>
-      </div>
+      {showSidebar ? (
+        <div className="sidebar">
+          <ControlPanel
+            onStart={handleStart}
+            onStop={handleStop}
+            onClose={() => setShowSidebar(false)}
+            onWaveformChange={handleWaveformChange}
+            onFrequencyChange={handleFrequencyChange}
+            onQChange={handleQChange}
+            onGainChange={handleGainChange}
+            onSmoothingChange={handleSmoothing}
+            started={started}
+          />
+          <section className="note">
+            <h3>Gestures</h3>
+            <p>Use your webcam (HTTPS required). Spread fingers to boost gain/Q; move hand closer/farther to sweep frequency.</p>
+            {gestureError && <p className="error">{gestureError}</p>}
+          </section>
+        </div>
+      ) : (
+        <button
+          className="btn"
+          style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 100, background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => setShowSidebar(true)}
+        >
+          Show Controls
+        </button>
+      )}
       <div className="stage" aria-label="3D visualizer">
         <Visualizer audio={audioRef.current} running={started} />
       </div>

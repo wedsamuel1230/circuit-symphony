@@ -7,12 +7,18 @@ import { useGestures } from './hooks/useGestures'
 
 function App() {
   const audioRef = useRef<AudioEngine | null>(null)
-  const { waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted } = useAppStore()
+  const { mode, waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted, markStopped } = useAppStore()
   const { initGestures, error: gestureError } = useGestures(audioRef)
 
   useEffect(() => {
     audioRef.current = new AudioEngine()
   }, [])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.setMode(mode)
+    }
+  }, [mode])
 
   const handleStart = async () => {
     if (!audioRef.current) return
@@ -24,6 +30,12 @@ function App() {
       console.error('Failed to start:', e)
       alert('Error starting application. Check console.')
     }
+  }
+
+  const handleStop = async () => {
+    if (!audioRef.current) return
+    await audioRef.current.stop()
+    markStopped()
   }
 
   const handleWaveformChange = (w: typeof waveform) => {
@@ -56,6 +68,7 @@ function App() {
       <div className="sidebar">
         <ControlPanel
           onStart={handleStart}
+          onStop={handleStop}
           onWaveformChange={handleWaveformChange}
           onFrequencyChange={handleFrequencyChange}
           onQChange={handleQChange}

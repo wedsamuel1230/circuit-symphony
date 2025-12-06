@@ -5,7 +5,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { createBloomPass } from './bloomPass'
-import ParticleWaveform from './ParticleWaveform'
+import LineWaveform from './LineWaveform'
 import SpectrumVisualizer from './SpectrumVisualizer'
 import StarField from './StarField'
 import AudioEngine from '../audio/AudioEngine'
@@ -46,7 +46,7 @@ export function Visualizer({ audio, running }: VisualizerProps) {
     key.position.set(4, 6, 6)
     scene.add(key)
 
-    const particleLayer = new ParticleWaveform(scene, 2048)
+    const particleLayer = new LineWaveform(scene, 2048)
     const spectrumLayer = new SpectrumVisualizer(scene, 128)
     const starField = new StarField(scene)
 
@@ -80,7 +80,7 @@ export function Visualizer({ audio, running }: VisualizerProps) {
         const bins = audio.getFrequencyData()
         const wave = audio.getWaveformData()
         spectrumLayer.update(bins)
-        particleLayer.update(wave, time * 0.001)
+        particleLayer.update(wave)
       }
       
       starField.update(time * 0.001)

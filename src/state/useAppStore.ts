@@ -18,6 +18,7 @@ export interface AppState {
   setGain: (gain: number) => void
   setAnalyserSmoothing: (value: number) => void
   markStarted: () => void
+  markStopped: () => void
 }
 
 const useAppStore = create<AppState>()(
@@ -36,6 +37,7 @@ const useAppStore = create<AppState>()(
     setGain: (gain) => set({ gain }),
     setAnalyserSmoothing: (value) => set({ analyserSmoothing: value }),
     markStarted: () => set({ started: true }),
+    markStopped: () => set({ started: false }),
   })),
 )
 

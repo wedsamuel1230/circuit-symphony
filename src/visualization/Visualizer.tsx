@@ -7,7 +7,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { createBloomPass } from './bloomPass'
 import ParticleWaveform from './ParticleWaveform'
 import SpectrumVisualizer from './SpectrumVisualizer'
-import AudioEngine from '@/audio/AudioEngine'
+import StarField from './StarField'
+import AudioEngine from '../audio/AudioEngine'
 
 interface VisualizerProps {
   audio: AudioEngine | null
@@ -45,8 +46,9 @@ export function Visualizer({ audio, running }: VisualizerProps) {
     key.position.set(4, 6, 6)
     scene.add(key)
 
-    const particleLayer = new ParticleWaveform(scene, 6000)
+    const particleLayer = new ParticleWaveform(scene, 2048)
     const spectrumLayer = new SpectrumVisualizer(scene, 128)
+    const starField = new StarField(scene)
 
     const composer = new EffectComposer(renderer)
     const renderPass = new RenderPass(scene, camera)
@@ -80,6 +82,8 @@ export function Visualizer({ audio, running }: VisualizerProps) {
         spectrumLayer.update(bins)
         particleLayer.update(wave, time * 0.001)
       }
+      
+      starField.update(time * 0.001)
 
       composer.render()
     }

@@ -21,30 +21,40 @@ export class HandDetector {
   }
 
   async init(onResult: HandResultCallback) {
-    this.onResult = onResult
-    this.video = document.createElement('video')
-    this.video.playsInline = true
-    this.video.muted = true
-    this.video.autoplay = true
+    try {
+      this.onResult = onResult
+      this.video = document.createElement('video')
+      this.video.playsInline = true
+      this.video.muted = true
+      this.video.autoplay = true
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
-    this.video.srcObject = stream
-    await this.video.play()
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
+      this.video.srcObject = stream
+      await new Promise<void>((resolve) => {
+        if (!this.video) return resolve()
+        this.video.onloadeddata = () => {
+          this.video!.play().then(resolve)
+        }
+      })
 
-    const fileset = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm')
-    this.landmarker = await HandLandmarker.createFromOptions(fileset, {
-      baseOptions: {
-        modelAssetPath:
-          'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-      },
-      numHands: this.options.maxHands ?? 2,
-      minHandDetectionConfidence: this.options.minConfidence ?? 0.5,
-      minHandPresenceConfidence: this.options.minConfidence ?? 0.5,
-      minTrackingConfidence: this.options.minConfidence ?? 0.5,
-      runningMode: 'VIDEO',
-    })
+      const fileset = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.10/wasm')
+      this.landmarker = await HandLandmarker.createFromOptions(fileset, {
+        baseOptions: {
+          modelAssetPath:
+            'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+        },
+        numHands: this.options.maxHands ?? 2,
+        minHandDetectionConfidence: this.options.minConfidence ?? 0.5,
+        minHandPresenceConfidence: this.options.minConfidence ?? 0.5,
+        minTrackingConfidence: this.options.minConfidence ?? 0.5,
+        runningMode: 'VIDEO',
+      })
 
-    this.loop()
+      this.loop()
+    } catch (e) {
+      console.error('HandDetector init failed:', e)
+      throw e
+    }
   }
 
   private loop = () => {

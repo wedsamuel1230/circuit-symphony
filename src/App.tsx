@@ -1,61 +1,34 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import ControlPanel from './components/ControlPanel'
 import Visualizer from './visualization/Visualizer'
 import AudioEngine from './audio/AudioEngine'
-import HandDetector from './gestures/HandDetector'
-import ParameterMapper from './gestures/ParameterMapper'
 import useAppStore from './state/useAppStore'
-
-function distance3D(a: number[], b: number[]) {
-  const dx = a[0] - b[0]
-  const dy = a[1] - b[1]
-  const dz = a[2] - b[2]
-  return Math.sqrt(dx * dx + dy * dy + dz * dz)
-}
+import { useGestures } from './hooks/useGestures'
 
 function App() {
   const audioRef = useRef<AudioEngine | null>(null)
-  const handRef = useRef<HandDetector | null>(null)
-  const mapper = useMemo(() => new ParameterMapper(), [])
-
-  const { waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, analyserSmoothing, started, markStarted } =
-    useAppStore()
+  const { waveform, setWaveform, setFrequency, setQ, setGain, setAnalyserSmoothing, started, markStarted } = useAppStore()
+  const { initGestures, error: gestureError } = useGestures(audioRef)
 
   useEffect(() => {
     audioRef.current = new AudioEngine()
-    return () => {
-      handRef.current?.dispose()
-    }
   }, [])
 
   const handleStart = async () => {
     if (!audioRef.current) return
-    await audioRef.current.start()
-    markStarted()
-    if (!handRef.current) {
-      handRef.current = new HandDetector({ maxHands: 2, minConfidence: 0.6 })
-      handRef.current.init((res) => {
-        if (!audioRef.current) return
-        if (!res.landmarks || res.landmarks.length === 0) return
-        const first = res.landmarks[0]
-        const confidence = res.handedness[0]?.score ?? 0.5
-        const fingerSpread = distance3D(first[8], first[20])
-        const handDistance = distance3D(first[0], first[8])
-        const mapped = mapper.map(handDistance, fingerSpread, confidence)
-        setFrequency(mapped.frequency)
-        setQ(mapped.q)
-        setGain(mapped.gain)
-        audioRef.current.setFrequency(mapped.frequency)
-        audioRef.current.setQ(mapped.q)
-        audioRef.current.setGain(mapped.gain)
-      })
+    try {
+      await audioRef.current.start()
+      markStarted()
+      await initGestures()
+    } catch (e) {
+      console.error('Failed to start:', e)
+      alert('Error starting application. Check console.')
     }
   }
 
   const handleWaveformChange = (w: typeof waveform) => {
     setWaveform(w)
-    if (!audioRef.current) return
-    audioRef.current.setWaveform(w)
+    audioRef.current?.setWaveform(w)
   }
 
   const handleFrequencyChange = (v: number) => {
@@ -93,6 +66,7 @@ function App() {
         <section className="note">
           <h3>Gestures</h3>
           <p>Use your webcam (HTTPS required). Spread fingers to boost gain/Q; move hand closer/farther to sweep frequency.</p>
+          {gestureError && <p className="error">{gestureError}</p>}
         </section>
       </div>
       <div className="stage" aria-label="3D visualizer">

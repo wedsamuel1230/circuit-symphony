@@ -1,0 +1,76 @@
+:root {
+  color-scheme: dark;
+  --bg: #05060a;
+  --panel: #0c0f17;
+  --accent: #7ae6ff;
+  --text: #e9edf5;
+  --muted: #9aa3b5;
+  --border: #1a1f2d;
+  --glow: 0 0 24px rgba(122, 230, 255, 0.3);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(122, 230, 255, 0.06), transparent 30%),
+    radial-gradient(circle at 80% 0%, rgba(255, 99, 235, 0.05), transparent 30%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  height: 100vh;
+  padding: 16px;
+}
+
+.sidebar {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--glow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stage {
+  position: relative;
+  background: linear-gradient(135deg, rgba(122, 230, 255, 0.06), rgba(255, 99, 235, 0.06));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--glow);
+}
+
+.note {
+  border: 1px dashed var(--border);
+  padding: 12px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+  }
+
+  .stage {
+    min-height: 320px;
+  }
+}
